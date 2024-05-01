@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="dashButton" parent="Theme.AppCompat">
+        <item name="background">@color/black</item>
+    </style>
+    <style name="InputDatePicker" >
+        <!-- Text color -->
+        <item name="android:calendarTextColor">@color/light_grey</item>
+        <!-- Divider color -->
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+</resources>

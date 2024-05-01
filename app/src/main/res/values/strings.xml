@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">समय</string>
+    <string name="converter">Converter</string>
+    <string name="convert">Convert</string>
+    <string name="timer">Timer</string>
+    <string name="stopWatch">Stop Watch</string>
+    <string name="select_timezone_to_convert">Select TimeZones To Convert</string>
+    <string name="select_time_in">Select Time In</string>
+    <string name="select_time_in_utc">Select Time In UTC</string>
+    <string name="time_in">Time In</string>
+    <string name="time_in_utc">Time In UTC</string>
+    <string name="alarm">Alarm</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="reset">RESET</string>
+    <string name="switch_timezone">SWITCH TIMEZONES</string>
+    <string name="set_alarm">SET ALARM</string>
+    <string name="cancel">CANCEL</string>
+    <string name="next">NEXT</string>
+    <string name="set">SET</string>
+    <string name="dismiss">DISMISS</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
