@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/black_background"
+    android:background="@color/charcoal"
     tools:context=".Alarm"
     android:id="@+id/alarm_fragment">
 
@@ -20,14 +20,13 @@
 
         <TextView
             android:id="@+id/fragment_name"
+            style="@style/headingTextLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:fontFamily="cursive"
-            android:textColor="@color/white"
             android:layout_gravity="center_vertical"
             android:text="@string/alarm"
-            android:textSize="40dp"
+            android:textSize="32dp"
             android:layout_weight="9"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

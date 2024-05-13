@@ -5,17 +5,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TimeConverter"
-    android:background="@drawable/black_background">
+    android:background="@color/charcoal">
 
     <TextView
         android:id="@+id/fragment_name"
+        style="@style/headingTextLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:fontFamily="cursive"
-        android:textColor="@color/white"
         android:text="Time Converter"
-        android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,20 +30,22 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_name">
 
         <TextView
+            style="@style/textLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:text="Timezone From:"
-            android:textColor="@color/light_grey" />
+            android:text="Timezone From:" />
 
         <AutoCompleteTextView
             android:id="@+id/timezoneFrom"
+            style="@style/textLabel"
+            android:backgroundTint="@color/white"
+            android:hint="@string/india_standard_time"
+            android:textColorHint="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:textColor="@color/light_grey" />
+            android:layout_marginEnd="20dp" />
     </LinearLayout>
 
 
@@ -60,23 +60,60 @@
         app:layout_constraintTop_toBottomOf="@+id/timezoneFromLayout">
 
         <TextView
+            style="@style/textLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed-medium"
             android:text="Timezone To:"
-            android:layout_marginStart="20dp"
-            android:textColor="@color/light_grey"/>
+            android:layout_marginStart="20dp" />
 
         <AutoCompleteTextView
             android:id="@+id/timezoneTo"
+            style="@style/textLabel"
+            android:backgroundTint="@color/white"
+            android:hint="@string/south_africa_standard_time"
+            android:textColorHint="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:textColor="@color/light_grey"/>
+            android:layout_marginEnd="20dp" />
     </LinearLayout>
 
 
+
+    <LinearLayout
+        android:id="@+id/input_date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timezoneToLayout">
+
+        <TextView
+            style="@style/textLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date:"
+            android:layout_marginStart="20dp" />
+
+        <EditText
+            android:id="@+id/input_tc_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/textLabel"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/calender"
+            android:drawablePadding="10dp"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="@string/hint_date"
+            android:textColorHint="@color/white"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/input_time_layout"
@@ -84,66 +121,75 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:background="@drawable/datepicker_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timezoneToLayout" >
+        app:layout_constraintTop_toBottomOf="@+id/input_date_layout">
 
-        <DatePicker
-            android:id="@+id/tc_input_date_picker"
+        <TextView
+            style="@style/textLabel"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner" />
+            android:layout_height="wrap_content"
+            android:text="Time:"
+            android:layout_marginStart="20dp" />
 
-        <NumberPicker
-            android:id="@+id/tc_input_hr"
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_marginStart="10dp" />
-        <NumberPicker
-            android:id="@+id/tc_input_minute"
-            android:layout_width="wrap_content"
-            android:layout_height="150dp"
-            android:layout_marginStart="10dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/time_in_layout"
+        <EditText
+            android:id="@+id/input_tc_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
+            style="@style/textLabel"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/time"
+            android:drawablePadding="10dp"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="@string/hint_time"
+            android:textColorHint="@color/white"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_time_layout">
+            android:layout_marginEnd="20dp"/>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/to_timezone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:text="@string/time_in"
-                android:textSize="20dp"
-                android:textColor="@color/light_grey" />
+    <TextView
+        android:id="@+id/label_result"
+        style="@style/headingTextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Results"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_time_layout" />
 
-            <EditText
-                android:id="@+id/to_timezone_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="00-00-0000 00:00"
-                android:enabled="false"
-                android:textColor="@color/light_grey"
-                android:inputType="time" />
+    <LinearLayout
+        android:id="@+id/time_in_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label_result">
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/to_timezone"
+            style="@style/subHeadingTextLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_in" />
+
+        <EditText
+            android:id="@+id/to_timezone_time"
+            style="@style/subHeadingTextLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="00-00-0000 00:00"
+            android:enabled="false" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/UTC_timezone_layout"
@@ -160,23 +206,20 @@
 
         <TextView
             android:id="@+id/utc_timezone"
+            style="@style/subHeadingTextLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:text="@string/time_in_utc"
-            android:textSize="20dp"
-            android:textColor="@color/light_grey"/>
+            android:text="@string/time_in_utc" />
 
         <EditText
             android:id="@+id/to_utc_timezone"
+            style="@style/subHeadingTextLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="00-00-0000 00:00"
             android:enabled="false"
-            android:textColor="@color/light_grey"
-            android:hint="@string/select_time_in_utc"
-            android:inputType="time" />
+            android:hint="@string/select_time_in_utc" />
 
 
     </LinearLayout>
@@ -195,17 +238,19 @@
 
         <Button
             android:id="@+id/switchBtn"
+            style="@style/styleButton"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:background="@drawable/grey_button"
-            android:textColor="@color/black"
             android:layout_weight="1"
-            android:textSize="14dp"
+            android:textSize="16dp"
             android:drawableEnd="@drawable/switch_arrow"
             android:text="@string/switch_timezone" />
 
         <Button
             android:id="@+id/convertBtn"
+            style="@style/styleButton"
+            android:textSize="16dp"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

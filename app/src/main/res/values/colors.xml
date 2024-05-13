@@ -3,4 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_grey">#a9a9a9</color>
+    <color name="charcoal">#242124</color>
+    <color name="silver">#C4C4C4</color>
+    <color name="dim_grey">#6D6D6D</color>
+
+
+
+
+
 </resources>

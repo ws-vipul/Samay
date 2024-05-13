@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,8 +32,10 @@ public class Timer extends Fragment {
     private Button startBtn, stopBtn, resetBtn;
     private NumberPicker hrsPicker, minutesPicker, secondsPicker;
     LinearLayout timePicker;
+    private ProgressBar progressCircular;
     private int timerCount = 0;
     private Boolean isReset = true;
+    int i =1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +59,9 @@ public class Timer extends Fragment {
                             ", Could Not Start Timer For Now",Toast.LENGTH_SHORT).show();
                 } else {
                     inputTimeCount = inputSeconds + (inputMinutes * 60) + (inputHrs * 3600);
+                    i = 1;
+                    progressCircular.setMax(inputTimeCount);
+                    progressCircular.setVisibility(View.VISIBLE);
                     SharedService.updateTimerCount(String.valueOf(inputTimeCount),this.getActivity());
                 }
             }
@@ -89,6 +95,7 @@ public class Timer extends Fragment {
             isReset = true;
             timerCount = 0;
             startBtn.setEnabled(true);
+            progressCircular.setVisibility(View.GONE);
             SharedService.updateIsTimerRunning("false", this.getActivity());
             timePicker.setVisibility(android.view.View.VISIBLE);
             timerCountTextView.setVisibility(android.view.View.GONE);
@@ -139,6 +146,7 @@ public class Timer extends Fragment {
 
     private void initializeComponent() {
 
+        progressCircular = timerView.findViewById(R.id.progress_circular);
         timerCountTextView = timerView.findViewById(R.id.timer);
         startBtn = timerView.findViewById(R.id.timer_start);
         resetBtn = timerView.findViewById(R.id.timer_reset);
@@ -170,9 +178,11 @@ public class Timer extends Fragment {
 
             String timerValue = String.format(Locale.getDefault(),
                     "%02d:%02d:%02d", hours, minutes, seconds);
-
+            progressCircular.setProgress(i);
+            i = i+1;
             timerCountTextView.setText(timerValue);
             if(timerCount == 0) {
+                progressCircular.setVisibility(View.GONE);
                 resetBtn.setEnabled(true);
                 stopBtn.setVisibility(View.GONE);
                 startBtn.setVisibility(View.VISIBLE);

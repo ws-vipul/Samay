@@ -11,16 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vk.timemachine.R;
-import com.vk.timemachine.model.AlarmModel;
+
 import java.util.List;
 
 public class SetAlarmAdpter extends RecyclerView.Adapter<SetAlarmAdpter.MyViewHolder> {
 
     private Context context;
-    private List<AlarmModel> alarmModelList;
+    private List<String> alarmActiveModelList;
 
-    public SetAlarmAdpter(Context context, List<AlarmModel> alarmModelList){
-        this.alarmModelList = alarmModelList;
+    public SetAlarmAdpter(Context context, List<String> alarmModelList){
+        this.alarmActiveModelList = alarmModelList;
         this.context = context;
     }
 
@@ -36,13 +36,13 @@ public class SetAlarmAdpter extends RecyclerView.Adapter<SetAlarmAdpter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull SetAlarmAdpter.MyViewHolder holder, int position) {
 
-        holder.alarmText.setText(alarmModelList.get(position).getDateTime());
-        holder.alarmSwitch.setChecked(alarmModelList.get(position).getAlarmActive());
+        holder.alarmText.setText(alarmActiveModelList.get(position));
+        holder.alarmSwitch.setChecked(true);
     }
 
     @Override
     public int getItemCount() {
-        return alarmModelList.size();
+        return alarmActiveModelList.size();
     }
 
 

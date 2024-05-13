@@ -3,6 +3,10 @@ package com.vk.timemachine.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.security.Key;
+import java.util.List;
+import java.util.Set;
+
 public class SharedService {
 
     private static final String USER_PREF_NAME = "user_pref";
@@ -18,6 +22,11 @@ public class SharedService {
     private static final String STOPWATCH_PREF_NAME = "stopwatch_pref";
     private static final String STOPWATCH_COUNT = STOPWATCH_PREF_NAME + ".stopwatch_count";
     private static final String IS_STOPWATCH_RUNNING = STOPWATCH_PREF_NAME + ".is_stopwatch_running";
+
+
+    //Alarm
+    private static final String ALARM_PREF_NAME = "alarm_pref";
+    private static final String SET_ALARMS = STOPWATCH_PREF_NAME + ".set_alarms";
 
     public static void updateLastFragment(final String value, final Context context) {
 
@@ -63,6 +72,15 @@ public class SharedService {
         editor.apply();
     }
 
+    public static void updateActiveAlarms(final Set<String> value, final Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(STOPWATCH_PREF_NAME,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(SET_ALARMS, value);
+        editor.apply();
+    }
+
     public static String getLastFragment(final Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PREF_NAME,
@@ -100,6 +118,14 @@ public class SharedService {
         SharedPreferences sharedPreferences = context.getSharedPreferences(STOPWATCH_PREF_NAME,
                 Context.MODE_PRIVATE);
         String value = sharedPreferences.getString(IS_STOPWATCH_RUNNING, null);
+        return value;
+    }
+
+    public static Set<String> getActiveAlarms(final Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(STOPWATCH_PREF_NAME,
+                Context.MODE_PRIVATE);
+        Set<String> value = sharedPreferences.getStringSet(SET_ALARMS, null);
         return value;
     }
 

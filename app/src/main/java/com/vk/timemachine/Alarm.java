@@ -22,14 +22,15 @@ import android.widget.PopupWindow;
 import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.vk.timemachine.Utils.SharedService;
 import com.vk.timemachine.adapter.SetAlarmAdpter;
-import com.vk.timemachine.model.AlarmModel;
 import com.vk.timemachine.services.MyBroadCastReceiver;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -45,7 +46,7 @@ public class Alarm extends Fragment {
     private DatePicker datePicker;
     private TimePicker timePicker;
     private Button cancelBtn, nextBtn, setAlarmBtn;
-    private List<AlarmModel> alarmModelList = new ArrayList();
+    private List<String> alarmModelActiveList = new ArrayList();
     private String date, time;
     private SetAlarmAdpter mAdapter;
 
@@ -57,12 +58,11 @@ public class Alarm extends Fragment {
 
         initializeComponent();
 
-        alarmModelList.add(new AlarmModel("12-04-2024 11:00", true));
-        alarmModelList.add(new AlarmModel("13-04-2024 12:30", true));
-        alarmModelList.add(new AlarmModel("15-04-2024 01:40", false));
+        if (SharedService.getActiveAlarms(this.getActivity()) != null) {
+            alarmModelActiveList.addAll(SharedService.getActiveAlarms(this.getActivity()));
+        }
 
-
-        mAdapter = new SetAlarmAdpter(this.getActivity(), alarmModelList);
+        mAdapter = new SetAlarmAdpter(this.getActivity(), alarmModelActiveList);
         alarmRecyclerView.setAdapter(mAdapter);
         alarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
@@ -146,16 +146,21 @@ public class Alarm extends Fragment {
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
+            alarmModelActiveList.add(userInput);
+            SharedService.updateActiveAlarms(new HashSet<String>(alarmModelActiveList),
+                    this.getActivity());
 
-            alarmModelList.add(new AlarmModel(userInput, true));
             mAdapter.notifyDataSetChanged();
 
             Intent intent = new Intent(this.getActivity(), MyBroadCastReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(),100,
-                    intent, PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(),
+                    100,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE);
 
             if (scheduleAfter != 0) {
-                AlarmManager alarmManager= (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+                AlarmManager alarmManager= (AlarmManager) getContext()
+                        .getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, (scheduleAfter), pendingIntent);
             }
 
