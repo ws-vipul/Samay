@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +19,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.vk.timemachine.Utils.SharedService;
-import com.vk.timemachine.adapter.SetAlarmAdpter;
+import com.vk.timemachine.adapter.DeActivatedAlarmsAdapter;
+import com.vk.timemachine.adapter.SetAlarmAdapter;
 import com.vk.timemachine.services.MyBroadCastReceiver;
 
 import java.text.ParseException;
@@ -39,16 +42,19 @@ public class Alarm extends Fragment {
     private final static  String TAG = "AlarmFragment";
 
     private View alarmView;
-    private RecyclerView alarmRecyclerView;
+    private RecyclerView activeAlarmRecyclerView, deactivatedAlarmRecyclerView;
     private FloatingActionButton addAlarmBtn;
     private PopupWindow popupWindow;
-    private ConstraintLayout alarmFragment;
+    private ScrollView alarmFragment;
     private DatePicker datePicker;
     private TimePicker timePicker;
     private Button cancelBtn, nextBtn, setAlarmBtn;
-    private List<String> alarmModelActiveList = new ArrayList();
+    public static List<String> alarmModelActiveList = new ArrayList();
+    public static List<String> deactivatedAlarmList = new ArrayList();
     private String date, time;
-    private SetAlarmAdpter mAdapter;
+    public static SetAlarmAdapter mAdapter;
+
+    public static DeActivatedAlarmsAdapter mDeactivatedAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,12 +65,23 @@ public class Alarm extends Fragment {
         initializeComponent();
 
         if (SharedService.getActiveAlarms(this.getActivity()) != null) {
+            alarmModelActiveList.clear();
             alarmModelActiveList.addAll(SharedService.getActiveAlarms(this.getActivity()));
         }
 
-        mAdapter = new SetAlarmAdpter(this.getActivity(), alarmModelActiveList);
-        alarmRecyclerView.setAdapter(mAdapter);
-        alarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        if (SharedService.getDeactivatedAlarms(this.getActivity()) != null) {
+            deactivatedAlarmList.clear();
+            deactivatedAlarmList.addAll(SharedService.getDeactivatedAlarms(this.getActivity()));
+        }
+
+        mAdapter = new SetAlarmAdapter(this.getActivity(), alarmModelActiveList);
+        activeAlarmRecyclerView.setAdapter(mAdapter);
+        activeAlarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+
+        mDeactivatedAdapter = new DeActivatedAlarmsAdapter(this.getActivity(), deactivatedAlarmList);
+        deactivatedAlarmRecyclerView.setAdapter(mDeactivatedAdapter);
+        deactivatedAlarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
 
         addAlarmBtn.setOnClickListener(new View.OnClickListener() {
@@ -80,11 +97,11 @@ public class Alarm extends Fragment {
     }
 
     private  void initializeComponent() {
-        alarmRecyclerView = alarmView.findViewById(R.id.mAlarmRecyclerView);
+        deactivatedAlarmRecyclerView = alarmView.findViewById(R.id.mAlarmDeactivateRecyclerView);
+        activeAlarmRecyclerView = alarmView.findViewById(R.id.mAlarmActiveRecyclerView);
         addAlarmBtn = alarmView.findViewById(R.id.add_alarm_btn);
         alarmFragment = alarmView.findViewById(R.id.alarm_fragment);
     }
-
 
     private void openAlarmPopupWindow(View view) {
         LayoutInflater inflater = (LayoutInflater) alarmView.getContext()
@@ -113,7 +130,7 @@ public class Alarm extends Fragment {
             String day = datePicker.getDayOfMonth() <= 9 ? "0" + datePicker.getDayOfMonth()
                     : String.valueOf(datePicker.getDayOfMonth());
 
-            date = String.valueOf(day +"-"+ month +"-"+ datePicker.getYear());
+            date = day +"-"+ month +"-"+ datePicker.getYear();
 
             nextBtn.setVisibility(View.GONE);
                     datePicker.setVisibility(View.GONE);
@@ -147,7 +164,7 @@ public class Alarm extends Fragment {
                 throw new RuntimeException(e);
             }
             alarmModelActiveList.add(userInput);
-            SharedService.updateActiveAlarms(new HashSet<String>(alarmModelActiveList),
+            SharedService.updateActiveAlarms(new HashSet<>(alarmModelActiveList),
                     this.getActivity());
 
             mAdapter.notifyDataSetChanged();
@@ -166,6 +183,16 @@ public class Alarm extends Fragment {
 
         });
 
+    }
+
+    private void cancelAlarm() {
+        Intent intent = new Intent(this.getActivity(), MyBroadCastReceiver.class);
+        intent.setAction("SomeAction");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 100, intent, PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
+        if(pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
 

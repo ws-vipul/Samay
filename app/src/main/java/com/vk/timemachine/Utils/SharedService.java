@@ -2,9 +2,6 @@ package com.vk.timemachine.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import java.security.Key;
-import java.util.List;
 import java.util.Set;
 
 public class SharedService {
@@ -21,12 +18,16 @@ public class SharedService {
     //STOPWATCH UTILS
     private static final String STOPWATCH_PREF_NAME = "stopwatch_pref";
     private static final String STOPWATCH_COUNT = STOPWATCH_PREF_NAME + ".stopwatch_count";
-    private static final String IS_STOPWATCH_RUNNING = STOPWATCH_PREF_NAME + ".is_stopwatch_running";
+    private static final String IS_STOPWATCH_RUNNING = STOPWATCH_PREF_NAME
+            + ".is_stopwatch_running";
 
 
     //Alarm
     private static final String ALARM_PREF_NAME = "alarm_pref";
-    private static final String SET_ALARMS = STOPWATCH_PREF_NAME + ".set_alarms";
+    private static final String SET_ACTIVE_ALARMS = ALARM_PREF_NAME + ".set_active_alarms";
+    private static final String SET_DEACTIVATED_ALARMS = ALARM_PREF_NAME
+            + ".set_deactivated_alarms";
+
 
     public static void updateLastFragment(final String value, final Context context) {
 
@@ -74,10 +75,19 @@ public class SharedService {
 
     public static void updateActiveAlarms(final Set<String> value, final Context context) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(STOPWATCH_PREF_NAME,
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(SET_ALARMS, value);
+        editor.putStringSet(SET_ACTIVE_ALARMS, value);
+        editor.apply();
+    }
+
+    public static void updateDeactivatedAlarms(final Set<String> value, final Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(SET_DEACTIVATED_ALARMS, value);
         editor.apply();
     }
 
@@ -123,10 +133,17 @@ public class SharedService {
 
     public static Set<String> getActiveAlarms(final Context context) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(STOPWATCH_PREF_NAME,
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
                 Context.MODE_PRIVATE);
-        Set<String> value = sharedPreferences.getStringSet(SET_ALARMS, null);
+        Set<String> value = sharedPreferences.getStringSet(SET_ACTIVE_ALARMS, null);
         return value;
     }
 
+    public static Set<String> getDeactivatedAlarms(final Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
+                Context.MODE_PRIVATE);
+        Set<String> value = sharedPreferences.getStringSet(SET_DEACTIVATED_ALARMS, null);
+        return value;
+    }
 }
