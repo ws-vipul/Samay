@@ -7,10 +7,10 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="100sp"
         app:cardBackgroundColor="@color/light_grey"
-        app:cardElevation="5dp"
-        app:cardCornerRadius="10dp"
+        app:cardElevation="5sp"
+        app:cardCornerRadius="10sp"
         app:cardUseCompatPadding="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,12 +24,12 @@
             android:weightSum="4">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
                 android:src="@drawable/alarm_black"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="10sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -42,7 +42,7 @@
                 android:text="00-00-00 00:00"
                 android:layout_weight="2"
                 android:gravity="center_vertical"
-                android:layout_marginStart="10dp"/>
+                android:layout_marginStart="10sp"/>
 
             <Switch
                 android:id="@+id/alarm_switch"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp" />
+                android:layout_marginEnd="16sp" />
 
         </LinearLayout>
 

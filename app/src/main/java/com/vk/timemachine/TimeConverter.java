@@ -16,7 +16,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -33,7 +32,6 @@ import java.util.TimeZone;
 public class TimeConverter extends Fragment {
 
     private static final String TAG = "TimeConverterFragment";
-
     private TimeZoneAdapter madapter;
     private View converterView;
     private AutoCompleteTextView timezoneFrom, timezoneTo;
@@ -61,7 +59,7 @@ public class TimeConverter extends Fragment {
         }
         madapter = new TimeZoneAdapter();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_selectable_list_item, madapter.getTimeZones());
 
         timezoneFrom.setThreshold(1);
@@ -89,7 +87,8 @@ public class TimeConverter extends Fragment {
             String tempTimeZoneFrom = timezoneFrom.getText().toString();
             timezoneFrom.setText(timezoneTo.getText().toString());
             timezoneTo.setText(tempTimeZoneFrom);
-            textToTimeZone.setText("Time In " + tempTimeZoneFrom);
+            textToTimeZone.setText(getResources().getString(R.string.time_in)
+                    + tempTimeZoneFrom);
             String tempFromZoneId = fromTimeZoneId;
             fromTimeZoneId = toTimeZoneId;
             toTimeZoneId = tempFromZoneId;
@@ -128,7 +127,7 @@ public class TimeConverter extends Fragment {
         inputDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(getActivity(),
+                new DatePickerDialog(getContext(),
                         AlertDialog.THEME_HOLO_DARK,
                         date,
                         calendar.get(Calendar.YEAR),
@@ -177,10 +176,14 @@ public class TimeConverter extends Fragment {
     private void convertAndSetTime() throws ParseException {
         String input= new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
 
-        if (!timezoneFrom.getText().toString().equals("") && !timezoneTo.getText().toString().equals("")) {
+        if (!timezoneFrom.getText().toString().equals("")
+                && !timezoneTo.getText().toString().equals("")
+        && inputDate.getText().equals("") && inputTime.getText().equals("")) {
 
             input = inputDate.getText() + " " + inputTime.getText();
-
+        } else {
+            inputDate.setText(input.toString().split(" ")[0]);
+            inputTime.setText(input.toString().split(" ")[1]);
         }
 
         SimpleDateFormat formatInput = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -208,7 +211,8 @@ public class TimeConverter extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 toTimeZoneId = madapter.getTimeZoneId(parent.getItemAtPosition(position).toString());
-                textToTimeZone.setText("Time In " + parent.getItemAtPosition(position).toString());
+                textToTimeZone.setText(getResources().getString(R.string.time_in)
+                        + parent.getItemAtPosition(position).toString());
             }
         };
 

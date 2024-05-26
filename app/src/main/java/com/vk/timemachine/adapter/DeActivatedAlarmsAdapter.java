@@ -24,7 +24,7 @@ import java.util.Set;
 public class DeActivatedAlarmsAdapter extends RecyclerView.Adapter<DeActivatedAlarmsAdapter
         .DeaactivatedAlarmViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<String> alarmDeactivatedList;
 
     public DeActivatedAlarmsAdapter(Context context, List<String> alarmDeactivatedList){
@@ -39,7 +39,7 @@ public class DeActivatedAlarmsAdapter extends RecyclerView.Adapter<DeActivatedAl
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.set_alarm_row, parent, false);
 
-        return new DeActivatedAlarmsAdapter.DeaactivatedAlarmViewHolder(view);
+        return new DeActivatedAlarmsAdapter.DeaactivatedAlarmViewHolder(view, context);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class DeActivatedAlarmsAdapter extends RecyclerView.Adapter<DeActivatedAl
         TextView alarmText;
         Switch alarmSwitch;
 
-        public DeaactivatedAlarmViewHolder(@NonNull View itemView) {
+        public DeaactivatedAlarmViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
 
             alarmText = itemView.findViewById(R.id.alarm_text);
@@ -72,11 +72,11 @@ public class DeActivatedAlarmsAdapter extends RecyclerView.Adapter<DeActivatedAl
                     if (isChecked) {
                         Set<String> activeAlarm = new HashSet<>();
                         Set<String> deActivatedAlarm = new HashSet<>();
-                        if (SharedService.getActiveAlarms(itemView.getContext()) != null) {
-                            activeAlarm  = SharedService.getActiveAlarms(itemView.getContext());
+                        if (SharedService.getActiveAlarms(context) != null) {
+                            activeAlarm  = SharedService.getActiveAlarms(context);
                         }
-                        if (SharedService.getDeactivatedAlarms(itemView.getContext()) != null) {
-                            deActivatedAlarm = SharedService.getDeactivatedAlarms(itemView.getContext());
+                        if (SharedService.getDeactivatedAlarms(context) != null) {
+                            deActivatedAlarm = SharedService.getDeactivatedAlarms(context);
                         }
                         Iterator itr= deActivatedAlarm.iterator();
 
@@ -90,13 +90,13 @@ public class DeActivatedAlarmsAdapter extends RecyclerView.Adapter<DeActivatedAl
 
                         if (updateAlarm != null) {
                             activeAlarm.add(updateAlarm);
-                            SharedService.updateActiveAlarms(activeAlarm, itemView.getContext());
+                            SharedService.updateActiveAlarms(activeAlarm, context);
                             deActivatedAlarm.remove(updateAlarm);
-                            SharedService.updateDeactivatedAlarms(deActivatedAlarm, itemView.getContext());
+                            SharedService.updateDeactivatedAlarms(deActivatedAlarm, context);
                             Alarm.alarmModelActiveList.clear();
                             Alarm.deactivatedAlarmList.clear();
-                            Alarm.alarmModelActiveList.addAll(SharedService.getActiveAlarms(itemView.getContext()));
-                            Alarm.deactivatedAlarmList.addAll(SharedService.getDeactivatedAlarms(itemView.getContext()));
+                            Alarm.alarmModelActiveList.addAll(SharedService.getActiveAlarms(context));
+                            Alarm.deactivatedAlarmList.addAll(SharedService.getDeactivatedAlarms(context));
                             Alarm.mAdapter.notifyDataSetChanged();
                             Alarm.mDeactivatedAdapter.notifyDataSetChanged();
                         }

@@ -7,8 +7,8 @@
     <string name="select_timezone_to_convert">Select TimeZones To Convert</string>
     <string name="select_time_in">Select Time In</string>
     <string name="select_time_in_utc">Select Time In UTC</string>
-    <string name="time_in">Time In</string>
-    <string name="time_in_utc">Time In UTC</string>
+    <string name="time_in"><b>\u2022</b>  Time In</string>
+    <string name="time_in_utc"><b>\u2022</b>  Time In UTC</string>
     <string name="alarm">Alarm</string>
     <string name="start">START</string>
     <string name="stop">STOP</string>
@@ -25,6 +25,7 @@
     <string name="hint_time">19:30 </string>
     <string name="active_alarms">Active Alarms</string>
     <string name="deactivated_alarms">Deactivated Alarms</string>
+    <string name="hr_min_sec">HR : MIN : SEC</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

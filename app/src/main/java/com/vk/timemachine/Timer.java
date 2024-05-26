@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +32,7 @@ public class Timer extends Fragment {
     private Button startBtn, stopBtn, resetBtn;
     private NumberPicker hrsPicker, minutesPicker, secondsPicker;
     LinearLayout timePicker;
+    ConstraintLayout startTimerView;
     private ProgressBar progressCircular;
     private int timerCount = 0;
     private Boolean isReset = true;
@@ -50,7 +51,7 @@ public class Timer extends Fragment {
 
         startBtn.setOnClickListener(View -> {
             int inputTimeCount = 0;
-            if (isReset && SharedService.getTimerCount(this.getActivity()) == null) {
+            if (isReset && SharedService.getTimerCount(this.getContext()) == null) {
                 int inputHrs = hrsPicker.getValue();
                 int inputMinutes = minutesPicker.getValue();
                 int inputSeconds = secondsPicker.getValue();
@@ -62,16 +63,16 @@ public class Timer extends Fragment {
                     i = 1;
                     progressCircular.setMax(inputTimeCount);
                     progressCircular.setVisibility(View.VISIBLE);
-                    SharedService.updateTimerCount(String.valueOf(inputTimeCount),this.getActivity());
+                    SharedService.updateTimerCount(String.valueOf(inputTimeCount),this.getContext());
                 }
             }
 
-            if(inputTimeCount != 0 || !isReset || SharedService.getTimerCount(this.getActivity()) != null) {
+            if(inputTimeCount != 0 || !isReset || SharedService.getTimerCount(this.getContext()) != null) {
                 Intent startTimer = new Intent(Timer.this.getActivity(), TimerService.class);
                 startTimer.setAction(StringConstants.START_FOREGROUND_SERVICE);
                 Timer.this.getActivity().startForegroundService(startTimer);
                 timePicker.setVisibility(android.view.View.GONE);
-                timerCountTextView.setVisibility(android.view.View.VISIBLE);
+                startTimerView.setVisibility(android.view.View.VISIBLE);
                 startBtn.setVisibility(android.view.View.GONE);
                 stopBtn.setVisibility(android.view.View.VISIBLE);
                 resetBtn.setEnabled(false);
@@ -80,7 +81,7 @@ public class Timer extends Fragment {
 
         stopBtn.setOnClickListener(View -> {
             isReset = false;
-            SharedService.updateIsTimerRunning("paused", this.getActivity());
+            SharedService.updateIsTimerRunning("paused", this.getContext());
             Intent stopTimer = new Intent(Timer.this.getActivity(), TimerService.class);
             stopTimer.setAction(StringConstants.STOP_FOREGROUND_SERVICE);
             Timer.this.getActivity().startForegroundService(stopTimer);
@@ -96,10 +97,10 @@ public class Timer extends Fragment {
             timerCount = 0;
             startBtn.setEnabled(true);
             progressCircular.setVisibility(View.GONE);
-            SharedService.updateIsTimerRunning("false", this.getActivity());
+            SharedService.updateIsTimerRunning("false", this.getContext());
             timePicker.setVisibility(android.view.View.VISIBLE);
-            timerCountTextView.setVisibility(android.view.View.GONE);
-            SharedService.updateTimerCount(null, this.getActivity());
+            startTimerView.setVisibility(android.view.View.GONE);
+            SharedService.updateTimerCount(null, this.getContext());
             timerCountTextView.setText("00:00:00");
         });
 
@@ -112,14 +113,14 @@ public class Timer extends Fragment {
         minutesPicker.setMaxValue(59);
         secondsPicker.setMaxValue(59);
 
-        if(SharedService.getTimerCount(Timer.this.getActivity())!= null) {
+        if(SharedService.getTimerCount(Timer.this.getContext())!= null) {
 
             if (SharedService.getIsTimerRunning(this.getActivity()) != null
                     && SharedService.getIsTimerRunning(this.getActivity())
                     .equalsIgnoreCase("true") || SharedService.getIsTimerRunning(this.getActivity())
                     .equalsIgnoreCase("paused")) {
                 timePicker.setVisibility(View.GONE);
-                timerCountTextView.setVisibility(View.VISIBLE);
+                startTimerView.setVisibility(View.VISIBLE);
                 if(SharedService.getIsTimerRunning(this.getActivity())
                         .equalsIgnoreCase("paused")) {
                     stopBtn.setVisibility(View.GONE);
@@ -155,6 +156,7 @@ public class Timer extends Fragment {
         minutesPicker = timerView.findViewById(R.id.time_picker_minutes);
         secondsPicker = timerView.findViewById(R.id.time_picker_seconds);
         timePicker = timerView.findViewById(R.id.time_picker);
+        startTimerView = timerView.findViewById(R.id.startedTimer);
 
     }
 

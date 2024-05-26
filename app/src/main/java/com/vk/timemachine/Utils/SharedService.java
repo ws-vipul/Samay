@@ -78,6 +78,8 @@ public class SharedService {
         SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(SET_ACTIVE_ALARMS);
+        editor.apply();
         editor.putStringSet(SET_ACTIVE_ALARMS, value);
         editor.apply();
     }
@@ -87,6 +89,8 @@ public class SharedService {
         SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(SET_DEACTIVATED_ALARMS);
+        editor.apply();
         editor.putStringSet(SET_DEACTIVATED_ALARMS, value);
         editor.apply();
     }

@@ -27,7 +27,7 @@
                 style="@style/headingTextLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="30sp"
                 android:layout_gravity="center_vertical"
                 android:text="@string/alarm"
                 android:textSize="32sp"
@@ -49,14 +49,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="10sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/alarmTitleText">
 
             <TextView
                 style="@style/subHeadingTextLabel"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="10sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/active_alarms"/>
@@ -65,21 +65,21 @@
                 android:id="@+id/mAlarmActiveRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20sp"/>
 
             <TextView
                 style="@style/subHeadingTextLabel"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="10sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="10sp"
                 android:text="@string/deactivated_alarms"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mAlarmDeactivateRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20sp">
 
             </androidx.recyclerview.widget.RecyclerView>
 
