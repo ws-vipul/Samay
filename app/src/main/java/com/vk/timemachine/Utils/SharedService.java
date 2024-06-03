@@ -2,6 +2,13 @@ package com.vk.timemachine.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.vk.timemachine.Alarm;
+import com.vk.timemachine.model.AlarmModel;
+
+import java.lang.reflect.Type;
 import java.util.Set;
 
 public class SharedService {
@@ -24,9 +31,7 @@ public class SharedService {
 
     //Alarm
     private static final String ALARM_PREF_NAME = "alarm_pref";
-    private static final String SET_ACTIVE_ALARMS = ALARM_PREF_NAME + ".set_active_alarms";
-    private static final String SET_DEACTIVATED_ALARMS = ALARM_PREF_NAME
-            + ".set_deactivated_alarms";
+    private static final String ALARMS = ALARM_PREF_NAME + ".alarms";
 
 
     public static void updateLastFragment(final String value, final Context context) {
@@ -73,25 +78,16 @@ public class SharedService {
         editor.apply();
     }
 
-    public static void updateActiveAlarms(final Set<String> value, final Context context) {
+    public static void updateAlarms(final Set<AlarmModel> value, final Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(SET_ACTIVE_ALARMS);
+        editor.remove(ALARMS);
         editor.apply();
-        editor.putStringSet(SET_ACTIVE_ALARMS, value);
-        editor.apply();
-    }
-
-    public static void updateDeactivatedAlarms(final Set<String> value, final Context context) {
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(SET_DEACTIVATED_ALARMS);
-        editor.apply();
-        editor.putStringSet(SET_DEACTIVATED_ALARMS, value);
+        Gson gson = new Gson();
+        String json = gson.toJson(value);
+        editor.putString(ALARMS, json);
         editor.apply();
     }
 
@@ -135,19 +131,19 @@ public class SharedService {
         return value;
     }
 
-    public static Set<String> getActiveAlarms(final Context context) {
+    public static Set<AlarmModel> getAlarms(final Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
                 Context.MODE_PRIVATE);
-        Set<String> value = sharedPreferences.getStringSet(SET_ACTIVE_ALARMS, null);
-        return value;
-    }
 
-    public static Set<String> getDeactivatedAlarms(final Context context) {
+        String json = sharedPreferences.getString(ALARMS, null);
+        Set<AlarmModel> alrams = null;
+        if (json != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<Set<AlarmModel>>(){}.getType();
+            alrams = gson.fromJson(json, type);
+        }
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
-                Context.MODE_PRIVATE);
-        Set<String> value = sharedPreferences.getStringSet(SET_DEACTIVATED_ALARMS, null);
-        return value;
+        return alrams;
     }
 }

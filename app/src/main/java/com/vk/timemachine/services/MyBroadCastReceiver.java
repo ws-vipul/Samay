@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,16 +22,21 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.vk.timemachine.AlarmAlert;
 import com.vk.timemachine.Constants.StringConstants;
 import com.vk.timemachine.MainActivity;
 import com.vk.timemachine.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class MyBroadCastReceiver extends BroadcastReceiver {
-    private MediaPlayer mediaPlayer;
-    private static final int CHANNEL_ID = 101;
+    public static MediaPlayer mediaPlayer;
+    private static final String CHANNEL_ID = "101";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -45,12 +51,46 @@ public class MyBroadCastReceiver extends BroadcastReceiver {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
         Bitmap largeIcon = bitmapDrawable.getBitmap();
 
+        SimpleDateFormat simpleDateFormat= new SimpleDateFormat("dd-MMM-yyyy hh:mm");
+        String alert = simpleDateFormat.format(new Date());
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.createNotificationChannel(new NotificationChannel(String.valueOf(CHANNEL_ID),"Activate Alarm", NotificationManager.IMPORTANCE_HIGH));
+        Notification notification;
 
-        Notification notification = new Notification();
+        Intent intentAlert = new Intent(context, AlarmAlert.class);
+        intentAlert.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP| Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 02, intentAlert
+        , PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notification = new Notification.Builder(context)
+                    .setLargeIcon(largeIcon)
+                    .setSmallIcon(R.drawable.samay_logo)
+                    .setContentText("Alarm Activated")
+                    .setSubText(alert)
+                    .setChannelId(CHANNEL_ID)
+                    .setAutoCancel(false)
+                    .addAction(R.drawable.ic_launcher_foreground, "View", pendingIntent)
+                    .build();
+
+             notificationManager.createNotificationChannel(new NotificationChannel(
+                     CHANNEL_ID,
+                     "Alarm Notification",
+                     NotificationManager.IMPORTANCE_HIGH));
+        } else {
+            notification = new Notification.Builder(context)
+                    .setLargeIcon(largeIcon)
+                    .setSmallIcon(R.drawable.samay_logo)
+                    .setContentText("Alarm Activated")
+                    .setSubText(alert)
+                    .setAutoCancel(false)
+                    .addAction(R.drawable.ic_launcher_foreground, "View", pendingIntent)
+                    .build();
+        }
+
+        notificationManager.notify(100, notification);
 
     }
 }
