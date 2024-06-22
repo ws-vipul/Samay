@@ -1,29 +1,39 @@
 package com.vk.timemachine.model;
 
+
 public class AlarmModel {
 
-    String DateTime;
-    Boolean isAlarmActive;
+    private String Alarm;
+    private Boolean isActive;
+    private int requestCode;
 
-
-    public String getDateTime() {
-        return DateTime;
+    public AlarmModel(String alarm, Boolean isActive, int requestCode) {
+        Alarm = alarm;
+        this.isActive = isActive;
+        this.requestCode = requestCode;
     }
 
-    public void setDateTime(String dateTime) {
-        DateTime = dateTime;
+    public String getAlarm() {
+        return Alarm;
     }
 
-    public AlarmModel(String dateTime, Boolean isAlarmActive) {
-        DateTime = dateTime;
-        this.isAlarmActive = isAlarmActive;
+    public void setAlarm(String alarm) {
+        Alarm = alarm;
     }
 
-    public Boolean getAlarmActive() {
-        return isAlarmActive;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setAlarmActive(Boolean alarmActive) {
-        isAlarmActive = alarmActive;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public int getRequestCode() {
+        return requestCode;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
     }
 }

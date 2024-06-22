@@ -37,6 +37,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
+    implementation ("com.google.code.gson:gson:2.8.8")
     implementation("com.hbb20:ccp:2.5.1")
     implementation("androidx.fragment:fragment:1.6.2")
     implementation("androidx.cardview:cardview:1.0.0")

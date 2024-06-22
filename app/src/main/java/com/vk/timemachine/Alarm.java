@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,10 +18,13 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.vk.timemachine.adapter.SetAlarmAdpter;
+import com.vk.timemachine.Utils.SharedService;
+import com.vk.timemachine.adapter.DeActivatedAlarmsAdapter;
+import com.vk.timemachine.adapter.SetAlarmAdapter;
 import com.vk.timemachine.model.AlarmModel;
 import com.vk.timemachine.services.MyBroadCastReceiver;
 
@@ -30,7 +32,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class Alarm extends Fragment {
@@ -38,16 +45,20 @@ public class Alarm extends Fragment {
     private final static  String TAG = "AlarmFragment";
 
     private View alarmView;
-    private RecyclerView alarmRecyclerView;
+    private RecyclerView activeAlarmRecyclerView, deactivatedAlarmRecyclerView;
     private FloatingActionButton addAlarmBtn;
     private PopupWindow popupWindow;
-    private ConstraintLayout alarmFragment;
+    private ScrollView alarmFragment;
     private DatePicker datePicker;
     private TimePicker timePicker;
     private Button cancelBtn, nextBtn, setAlarmBtn;
-    private List<AlarmModel> alarmModelList = new ArrayList();
+    public static List<AlarmModel> alarms = new ArrayList();
+    public static List<String> deactivatedAlarms = new ArrayList();
+    public static List<String> activeAlarms =  new ArrayList<>();
     private String date, time;
-    private SetAlarmAdpter mAdapter;
+    public static SetAlarmAdapter mAdapter;
+    private static int requestCode = 100;
+    public static DeActivatedAlarmsAdapter mDeactivatedAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,15 +68,32 @@ public class Alarm extends Fragment {
 
         initializeComponent();
 
-        alarmModelList.add(new AlarmModel("12-04-2024 11:00", true));
-        alarmModelList.add(new AlarmModel("13-04-2024 12:30", true));
-        alarmModelList.add(new AlarmModel("15-04-2024 01:40", false));
+        alarms.clear();
+        activeAlarms.clear();
+        deactivatedAlarms.clear();
+        if (SharedService.getAlarms(this.getContext()) != null) {
+            alarms.addAll(SharedService.getAlarms(this.getContext()));
+
+            activeAlarms = alarms.stream()
+                    .filter(alarmModel -> alarmModel.getIsActive().equals(true))
+                    .map(alarmModel -> alarmModel.getAlarm())
+                    .collect(Collectors.toList());
+
+            deactivatedAlarms = alarms.stream()
+                    .filter(alarmModel -> alarmModel.getIsActive().equals(false))
+                    .map(alarmModel -> alarmModel.getAlarm())
+                    .collect(Collectors.toList());
+        }
 
 
-        mAdapter = new SetAlarmAdpter(this.getActivity(), alarmModelList);
-        alarmRecyclerView.setAdapter(mAdapter);
-        alarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
+        mAdapter = new SetAlarmAdapter(this.getContext(), activeAlarms);
+        activeAlarmRecyclerView.setAdapter(mAdapter);
+        activeAlarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        mDeactivatedAdapter = new DeActivatedAlarmsAdapter(this.getContext(), deactivatedAlarms);
+        deactivatedAlarmRecyclerView.setAdapter(mDeactivatedAdapter);
+        deactivatedAlarmRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         addAlarmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,11 +108,11 @@ public class Alarm extends Fragment {
     }
 
     private  void initializeComponent() {
-        alarmRecyclerView = alarmView.findViewById(R.id.mAlarmRecyclerView);
+        deactivatedAlarmRecyclerView = alarmView.findViewById(R.id.mAlarmDeactivateRecyclerView);
+        activeAlarmRecyclerView = alarmView.findViewById(R.id.mAlarmActiveRecyclerView);
         addAlarmBtn = alarmView.findViewById(R.id.add_alarm_btn);
         alarmFragment = alarmView.findViewById(R.id.alarm_fragment);
     }
-
 
     private void openAlarmPopupWindow(View view) {
         LayoutInflater inflater = (LayoutInflater) alarmView.getContext()
@@ -113,7 +141,7 @@ public class Alarm extends Fragment {
             String day = datePicker.getDayOfMonth() <= 9 ? "0" + datePicker.getDayOfMonth()
                     : String.valueOf(datePicker.getDayOfMonth());
 
-            date = String.valueOf(day +"-"+ month +"-"+ datePicker.getYear());
+            date = day +"-"+ month +"-"+ datePicker.getYear();
 
             nextBtn.setVisibility(View.GONE);
                     datePicker.setVisibility(View.GONE);
@@ -147,21 +175,31 @@ public class Alarm extends Fragment {
                 throw new RuntimeException(e);
             }
 
-            alarmModelList.add(new AlarmModel(userInput, true));
-            mAdapter.notifyDataSetChanged();
-
-            Intent intent = new Intent(this.getActivity(), MyBroadCastReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getActivity(),100,
-                    intent, PendingIntent.FLAG_IMMUTABLE);
-
+            Intent intent = new Intent(this.getContext(), MyBroadCastReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getContext(),
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE);
             if (scheduleAfter != 0) {
-                AlarmManager alarmManager= (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+                AlarmManager alarmManager = (AlarmManager) getContext()
+                        .getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, (scheduleAfter), pendingIntent);
             }
 
+            alarms.add(new AlarmModel(userInput, true, requestCode));
+            SharedService.updateAlarms(new HashSet<>(alarms), this.getContext());
+
+            activeAlarms.clear();
+            activeAlarms.addAll(SharedService.getAlarms(this.getContext()).stream()
+                    .filter(alarmModel -> alarmModel.getIsActive().equals(true))
+                    .map(alarmModel -> alarmModel.getAlarm())
+                    .collect(Collectors.toList()));
+
+            mAdapter.notifyDataSetChanged();
+
+            requestCode++;
         });
 
     }
-
 
 }

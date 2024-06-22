@@ -81,7 +81,7 @@ public class StopWatchService extends Service {
                     StopWatchService.this);
             notifyUIToUpdate();
             Log.e(TAG, "Stopwatch count: " + count);
-            handler.postDelayed(this, 1000);
+            handler.postDelayed(this, 100);
 
         }
     };

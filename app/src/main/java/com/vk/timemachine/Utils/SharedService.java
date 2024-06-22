@@ -3,6 +3,14 @@ package com.vk.timemachine.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.vk.timemachine.Alarm;
+import com.vk.timemachine.model.AlarmModel;
+
+import java.lang.reflect.Type;
+import java.util.Set;
+
 public class SharedService {
 
     private static final String USER_PREF_NAME = "user_pref";
@@ -17,7 +25,14 @@ public class SharedService {
     //STOPWATCH UTILS
     private static final String STOPWATCH_PREF_NAME = "stopwatch_pref";
     private static final String STOPWATCH_COUNT = STOPWATCH_PREF_NAME + ".stopwatch_count";
-    private static final String IS_STOPWATCH_RUNNING = STOPWATCH_PREF_NAME + ".is_stopwatch_running";
+    private static final String IS_STOPWATCH_RUNNING = STOPWATCH_PREF_NAME
+            + ".is_stopwatch_running";
+
+
+    //Alarm
+    private static final String ALARM_PREF_NAME = "alarm_pref";
+    private static final String ALARMS = ALARM_PREF_NAME + ".alarms";
+
 
     public static void updateLastFragment(final String value, final Context context) {
 
@@ -63,6 +78,19 @@ public class SharedService {
         editor.apply();
     }
 
+    public static void updateAlarms(final Set<AlarmModel> value, final Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(ALARMS);
+        editor.apply();
+        Gson gson = new Gson();
+        String json = gson.toJson(value);
+        editor.putString(ALARMS, json);
+        editor.apply();
+    }
+
     public static String getLastFragment(final Context context) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_PREF_NAME,
@@ -103,4 +131,19 @@ public class SharedService {
         return value;
     }
 
+    public static Set<AlarmModel> getAlarms(final Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ALARM_PREF_NAME,
+                Context.MODE_PRIVATE);
+
+        String json = sharedPreferences.getString(ALARMS, null);
+        Set<AlarmModel> alrams = null;
+        if (json != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<Set<AlarmModel>>(){}.getType();
+            alrams = gson.fromJson(json, type);
+        }
+
+        return alrams;
+    }
 }

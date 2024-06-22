@@ -31,6 +31,10 @@ public class StopWatch extends Fragment {
     private Button startBtn, stopBtn, resetBtn;
 
     private int stopWatchCount = 0;
+    private static int hours = 0;
+    private static int minutes = 0;
+    private static int seconds = 0;
+    private static int milliseconds = 0;
 
 
     @Override
@@ -119,15 +123,15 @@ public class StopWatch extends Fragment {
     private void updateUITimerCount(Intent intent) {
         if(intent.getExtras() != null) {
             stopWatchCount = intent.getIntExtra(TimerService.COUNT, 1);
-            int hours = stopWatchCount/3600;
-            int minutes = (stopWatchCount % 3600) / 60;
-            int seconds = (stopWatchCount % 60);
+            hours = (stopWatchCount/10)/3600;
+            minutes = ((stopWatchCount/10) % 3600) / 60;
+            seconds = ((stopWatchCount/10) % 60);
+            milliseconds = stopWatchCount%10;
 
             String timerValue = String.format(Locale.getDefault(),
-                    "%02d:%02d:%02d", hours, minutes, seconds);
+                    "%02d:%02d:%02d:%2d"+"0", hours, minutes, seconds, milliseconds);
 
             stopwatchCountTextView.setText(timerValue);
-
         }
     }
 
